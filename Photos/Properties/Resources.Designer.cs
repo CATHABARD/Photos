@@ -9,7 +9,7 @@
 //------------------------------------------------------------------------------
 
 
-namespace Photosr.Properties
+namespace Photos.Properties
 {
     /// <summary>
     ///   Une classe de ressource fortement typée destinée, entre autres, à la consultation des chaînes localisées.

@@ -62,10 +62,6 @@ namespace Photos
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
-            this.evenementsTableAdapter1 = new Photos.PhotosDBDataSetTableAdapters.EvenementsTableAdapter();
-            this.joursTableAdapter1 = new Photos.PhotosDBDataSetTableAdapters.JoursTableAdapter();
-            this.photosTableAdapter1 = new Photos.PhotosDBDataSetTableAdapters.PhotosTableAdapter();
-            this.photosOrganiserDBDataSet1 = new Photos.PhotosDBDataSet();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -75,7 +71,6 @@ namespace Photos
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.photosOrganiserDBDataSet1)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -375,24 +370,6 @@ namespace Photos
             this.progressBar1.TabIndex = 3;
             this.progressBar1.Visible = false;
             // 
-            // evenementsTableAdapter1
-            // 
-            this.evenementsTableAdapter1.ClearBeforeFill = true;
-            // 
-            // joursTableAdapter1
-            // 
-            this.joursTableAdapter1.ClearBeforeFill = true;
-            // 
-            // photosTableAdapter1
-            // 
-            this.photosTableAdapter1.ClearBeforeFill = true;
-            // 
-            // photosOrganiserDBDataSet1
-            // 
-            this.photosOrganiserDBDataSet1.DataSetName = "PhotosOrganiserDBDataSet";
-            this.photosOrganiserDBDataSet1.Namespace = "http://tempuri.org/PhotosDBDataSet.xsd";
-            this.photosOrganiserDBDataSet1.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -423,7 +400,6 @@ namespace Photos
             this.splitContainer2.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.photosOrganiserDBDataSet1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -442,10 +418,6 @@ namespace Photos
         private System.Windows.Forms.ToolStripMenuItem quitterToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripMenuItem créerUnJourToolStripMenuItem;
-        private PhotosDBDataSetTableAdapters.EvenementsTableAdapter evenementsTableAdapter1;
-        private PhotosDBDataSetTableAdapters.JoursTableAdapter joursTableAdapter1;
-        private PhotosDBDataSetTableAdapters.PhotosTableAdapter photosTableAdapter1;
-        private PhotosDBDataSet photosOrganiserDBDataSet1;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;

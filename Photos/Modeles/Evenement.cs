@@ -14,6 +14,6 @@ namespace Photos.Modeles
         [MaxLength(250)]
         public string Commentaire { get; set; } = String.Empty;
 
-        public ArrayList Jours { get; set; } = new ArrayList();
+        public List<Jour> Jours { get; set; } = new ();
     }
 }

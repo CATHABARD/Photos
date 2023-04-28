@@ -1,35 +1,37 @@
 ﻿using Photos.Modeles;
-using System;
-using System.Windows.Forms;
-using static Photos.PhotosDBDataSet;
+using Photos.Services;
 
 namespace Photos
 {
     public partial class NouveauJour : Form
     {
-        EvenementsDataTable evenementsDataTable;
         readonly Evenement _evenement;
-        private Jour jour;
-        public Jour Jour { get { return jour; } }
+        private Jour? jour;
+        public Jour? Jour { get { return jour; } }
+        readonly EvenementsService evenementsService;
+        readonly PhotosDbContext _context;
+        private List<Evenement> evenements;
+        readonly JoursService joursService;
 
-        public NouveauJour(Evenement e)
+        public NouveauJour(PhotosDbContext context, Evenement e)
         {
+            _context = context;
             InitializeComponent();
-            this._evenement = e;
-
+            _evenement = e;
+            evenementsService = new (_context);
+            joursService = new (_context);
+            // remplassage du ComboBox evenement
+            evenements = evenementsService.GetEvenements();
         }
 
         private void NouveauJour_Load(object sender, EventArgs e)
         {
-            this.evenementsTableAdapter.Fill(this.PhotosDBDataSet.Evenements);
             Guid resultat = Guid.NewGuid();
             id.Text = resultat.ToString("D");
-            evenement.SelectedIndex = evenement.Items.Count - 1;
-            string idEv = evenement.SelectedValue.ToString();
-            evenementsDataTable = evenementsTableAdapter.GetDataById(idEv);
-            if (evenementsDataTable.Count > 0)
+
+            foreach (Evenement _e in evenements)
             {
-                date.Value = (DateTime)evenementsDataTable.Rows[0]["Date"];
+                evenement.Items.Add(_e);
             }
             evenement.SelectedValue = _evenement.Id;
         }
@@ -44,33 +46,27 @@ namespace Photos
             if (evenement.SelectedValue == null)
                 return;
 
-            string idEvenement = evenement.SelectedValue.ToString();
-            foreach (EvenementsRow rowEvenement in this.PhotosDBDataSet.Evenements.Rows)
+            string? idEvenement = evenement.SelectedValue.ToString();
+            foreach (Evenement rowEvenement in evenements)
             {
                 if (rowEvenement.Id == idEvenement)
                 {
                     DateTime dte = rowEvenement.Date.Date;
                     int duree = rowEvenement.Duree;
                     DateTime dteFin = dte.AddDays(duree).Date;
+                    // Si la date 
                     if(date.Value >= dte && date.Value <= dte.AddDays(duree))
                     {
+                        // Si un texte a été saisi dans le champs remarques
                         if(remarques.Text.Length > 0)
                         {
-                            JoursRow row = PhotosDBDataSet.Jours.NewJoursRow();
-                            row.Id = id.Text;
-                            row.IdEvenement = evenement.SelectedValue.ToString();
-                            row.Date = date.Value;
-                            row.Commentaire = remarques.Text;
-                            PhotosDBDataSet.Jours.AddJoursRow(row);
-
-                            joursTableAdapter1.Update(PhotosDBDataSet);
-
-                            // Initialise le champ Jour
-                            jour = new Jour();
+                            Jour jour = new ();
+                            jour.Id = id.Text;
+                            jour.EvenementId = evenement.SelectedValue.ToString()!;
                             jour.Date = date.Value;
                             jour.Commentaire = remarques.Text;
-                            jour.Id = id.Text;
-                            jour.IdEvenement = _evenement.Id;
+                            jour.Id = joursService.AddJour(jour);
+
                             DialogResult = DialogResult.OK;
                             Close();
                         }

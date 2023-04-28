@@ -11,6 +11,8 @@ namespace Photos
 
         public EditCommentairePhoto()
         {
+            commentaire = String.Empty;
+            path = String.Empty;
             InitializeComponent();
         }
 

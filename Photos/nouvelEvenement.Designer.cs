@@ -30,7 +30,6 @@ namespace Photos
         private void InitializeComponent()
         {
             this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
-            this.photosOrganiserDBDataSet1 = new Photos.PhotosDBDataSet();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
@@ -38,11 +37,9 @@ namespace Photos
             this.label3 = new System.Windows.Forms.Label();
             this.validerBtn = new System.Windows.Forms.Button();
             this.annulerBtn = new System.Windows.Forms.Button();
-            this.evenementsTableAdapter1 = new Photos.PhotosDBDataSetTableAdapters.EvenementsTableAdapter();
             this.titre = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.id = new System.Windows.Forms.TextBox();
-            ((System.ComponentModel.ISupportInitialize)(this.photosOrganiserDBDataSet1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -55,11 +52,6 @@ namespace Photos
             this.dateTimePicker1.Name = "dateTimePicker1";
             this.dateTimePicker1.Size = new System.Drawing.Size(114, 20);
             this.dateTimePicker1.TabIndex = 0;
-            // 
-            // photosOrganiserDBDataSet1
-            // 
-            this.photosOrganiserDBDataSet1.DataSetName = "PhotosDBDataSet";
-            this.photosOrganiserDBDataSet1.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
             // 
             // label1
             // 
@@ -139,10 +131,6 @@ namespace Photos
             this.annulerBtn.UseVisualStyleBackColor = true;
             this.annulerBtn.Click += new System.EventHandler(this.AnnulerBtn_Click);
             // 
-            // evenementsTableAdapter1
-            // 
-            this.evenementsTableAdapter1.ClearBeforeFill = true;
-            // 
             // titre
             // 
             this.titre.Location = new System.Drawing.Point(132, 34);
@@ -188,7 +176,6 @@ namespace Photos
             this.Name = "nouvelEvenement";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Nouvel évènement";
-            ((System.ComponentModel.ISupportInitialize)(this.photosOrganiserDBDataSet1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -205,8 +192,6 @@ namespace Photos
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button validerBtn;
         private System.Windows.Forms.Button annulerBtn;
-        private PhotosDBDataSet photosOrganiserDBDataSet1;
-        private PhotosDBDataSetTableAdapters.EvenementsTableAdapter evenementsTableAdapter1;
         private System.Windows.Forms.TextBox titre;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox id;

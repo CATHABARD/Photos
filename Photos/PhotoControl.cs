@@ -1,9 +1,5 @@
 ﻿using Photos.Modeles;
 using Photos.Services;
-using System;
-using System.Drawing;
-using System.IO;
-using System.Windows.Forms;
 
 namespace Photos
 {
@@ -12,14 +8,16 @@ namespace Photos
         private readonly Photo photo;
         private readonly PhotosService photosService;
         public delegate void Modifie(object sender, ModifiePhotoEventArgs e);                                        
-        public event Modifie modifie;
+        public event Modifie? modifie;
         public delegate void Zoom(object sender, ZoomPhotoEventArgs e);
         public event Zoom zoom;
+        readonly PhotosDbContext _context;
 
-         
-        public PhotoControl(Photo p)
-        {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+        public PhotoControl(PhotosDbContext context, Photo p)
+        {
+            _context = context;
             InitializeComponent();
+            photosService = new(_context);
 
             photo = p;
             try
@@ -40,7 +38,6 @@ namespace Photos
 
             date.Text = photo.Heure.ToShortDateString() + " " + photo.Heure.ToShortTimeString();
             texte.Text = photo.Commentaire;
-            photosService = new PhotosService();
         }
 
         private bool ThumbnailCallback()

@@ -50,7 +50,8 @@ namespace Photos.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=DESKTOP-AJHSUMI;Initial Catalog=PhotosDB;Integrated Security=True")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=DESKTOP-AJHSUMI;Initial Catalog=PhotosDB;Integrated Security=True;Enc" +
+            "rypt=False;TrustServerCertificate=False")]
         public string PhotosOrganiserDBConnectionString {
             get {
                 return ((string)(this["PhotosOrganiserDBConnectionString"]));

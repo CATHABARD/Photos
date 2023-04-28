@@ -1,7 +1,5 @@
 ﻿using Photos.Modeles;
 using Photos.Services;
-using System;
-using System.Windows.Forms;
 
 namespace Photos
 {
@@ -10,11 +8,13 @@ namespace Photos
         private string selectedPath = String.Empty;
         public string SelectedPath { get { return selectedPath; } set { selectedPath = value; } }
         readonly ParamsService paramsService;
+        readonly PhotosDbContext _context;
 
-        public EditPathImages(string path)
+        public EditPathImages(string path, PhotosDbContext context)
         {
+            _context = context;
             InitializeComponent();
-            paramsService = new ParamsService();
+            paramsService = new (_context);
             selectedPath = path.Trim();
             emplacementActueltextBox.Text = selectedPath;
         }

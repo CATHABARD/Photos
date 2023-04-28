@@ -1,89 +1,48 @@
 ﻿using Photos.Modeles;
-using Photos.PhotosDBDataSetTableAdapters;
-using System.Collections.Generic;
 
 namespace Photos.Services
 {
     class ParamsService
     {
-		private readonly ParamsTableAdapter ParamsTableAdapter;
-		private readonly PhotosDBDataSet PhotosDBDataSet;
+        readonly PhotosDbContext _context;
 
-		public ParamsService()
+        public ParamsService(PhotosDbContext context)
         {
-			PhotosDBDataSet = new PhotosDBDataSet();
-            ParamsTableAdapter = new ParamsTableAdapter();
+            _context = context;
         }
 
 		public List<Param> GetParams()
         {
-            List<Param> parametres = new List<Param>();
-            ParamsTableAdapter.Fill(PhotosDBDataSet.Params);
-            foreach (PhotosDBDataSet.ParamsRow row in PhotosDBDataSet.Params.Rows)
-            {
-                Param p = new Param();
-                p.Id = row.Id;
-                p.Nom = row.Nom;
-                p.Valeur = row.Valeur;
-                parametres.Add(p);
-            }
-
-			return parametres;
+            return _context.Params
+                .ToList();
         }
 
-        public Param GetParam(string paramName)
+        public Param? GetParam(string paramName)
         {
-            ParamsTableAdapter.FillByNom(PhotosDBDataSet.Params, paramName);
-
-            foreach (PhotosDBDataSet.ParamsRow row in PhotosDBDataSet.Params.Rows)
-            {
-                if (row.Nom == paramName)
-                {
-                    Param p = new Param();
-                    p.Id = row.Id;
-                    p.Nom = row.Nom;
-                    p.Valeur = row.Valeur;
-                    return p;
-                }
-            }
-            return null; // rien trouvé
+            Param? Param = _context.Params
+                .FirstOrDefault(p => p.Nom == paramName);
+            
+            return Param;
         }
 
-        public Param GetParam(int Id)
+        public Param? GetParam(int Id)
         {
-            ParamsTableAdapter.Fill(PhotosDBDataSet.Params);
-            foreach (PhotosDBDataSet.ParamsRow row in PhotosDBDataSet.Params.Rows)
-            {
-                if (row.Id == Id)
-                {
-                    Param p = new Param();
-                    p.Id = row.Id;
-                    p.Nom = row.Nom;
-                    p.Valeur = row.Valeur;
-                    return p;
-                }
-            }
-            return null; // rien trouvé
+            return _context.Params
+                .Find(Id);
         }
 
         public void AddParam(Param param)
         {
-            PhotosDBDataSet.ParamsRow row= PhotosDBDataSet.Params.NewParamsRow();
-            row.Nom = param.Nom;
-            row.Valeur = param.Valeur;
-            PhotosDBDataSet.Params.AddParamsRow(row);
-            ParamsTableAdapter.Update(PhotosDBDataSet.Params);
+            _context.Add(param);
         }
 
         /// <summary>
         /// Permet de changer la valeur d'un paramêtre
         /// </summary>
-        /// <param name="param"></param>
+        /// <param name="param">Objet Param</param>
         public void UpdateParam(Param param)
         {
-            PhotosDBDataSet.ParamsRow row = PhotosDBDataSet.Params.FindById(param.Id);
-            row.Valeur = param.Valeur;
-            ParamsTableAdapter.Update(PhotosDBDataSet.Params);
+            _context.Update(param);
         }
     }
 }

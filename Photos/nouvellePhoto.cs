@@ -1,27 +1,25 @@
 ﻿using Photos.Modeles;
 using Photos.Services;
-using System;
-using System.Collections;
-using System.Drawing;
-using System.Drawing.Text;
-using System.IO;
-using System.Windows.Forms;
 
 namespace Photos
 {
     public partial class nouvellePhoto : Form
     {
-        private Jour jour;
-        private Evenement evenement;
-        private Param param;
+        private Jour? jour;
+        private Evenement? evenement;
+        private Param? param;
         private string destination;
-        private readonly ParamsService paramsService = new ParamsService();
+        private readonly ParamsService paramsService;
         private PhotosService photosService;
-        private ArrayList listePhotos;
+        private List<Photo>? listePhotos;
+        readonly PhotosDbContext _context;
 
-        public nouvellePhoto()
+        public nouvellePhoto(PhotosDbContext context)
         {
+            _context = context;
             InitializeComponent();
+            paramsService = new (_context);
+            photosService = new(_context);
         }
 
         /// <summary>
@@ -46,8 +44,8 @@ namespace Photos
                 jourPath.Substring(0, 2) +
                 @"\";
 
-            listePhotos = new ArrayList();
-            photosService = new PhotosService(j);
+            listePhotos = new ();
+            photosService = new (_context, j);
 
             return ShowDialog();
         }

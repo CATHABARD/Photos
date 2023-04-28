@@ -1,73 +1,52 @@
-﻿using Photos.Modeles;
-using Photos.PhotosDBDataSetTableAdapters;
-using System.Collections;
+﻿using Microsoft.EntityFrameworkCore;
+using Photos.Modeles;
 
 namespace Photos.Services
 {
-    class Jours
+    class JoursService
     {
-        private readonly JoursTableAdapter joursTableAdapter1;
-        private readonly PhotosDBDataSet photosOrganiserDBDataSet1;
-        private ArrayList jours;
-        private ArrayList tousLesJours;
+        readonly PhotosDbContext _context;
+        private List<Photo> jours;
+        private List<Photo> tousLesJours;
 
-        public Jours() 
+        public JoursService(PhotosDbContext context) 
         {
-            jours = new ArrayList();
-            tousLesJours = new ArrayList();
-            joursTableAdapter1 = new JoursTableAdapter();
-            photosOrganiserDBDataSet1 = new PhotosDBDataSet();
+            jours = new ();
+            tousLesJours = new ();
+            _context = context;
         }
 
         public void GetJoursEvenement(Evenement e)
         {
-            this.jours.Clear();
-            joursTableAdapter1.FillByEvenement(photosOrganiserDBDataSet1.Jours, e.Id);
-            e.Jours = new ArrayList();
-            foreach (PhotosDBDataSet.JoursRow row in photosOrganiserDBDataSet1.Jours.Rows)
-            {
-                Jour j = new Jour();
-                j.Date = row.Date;
-                j.Id = row.Id;
-                j.IdEvenement = row.IdEvenement;
-                j.Commentaire = row.Commentaire;
-                e.Jours.Add(j);
-            }
-            return;
+            e.Jours = _context.Jours
+                .Where(j => j.EvenementId == e.Id)
+                .OrderBy(j => j.Date)
+                .ToList();
         }
 
-        public ArrayList GetJoursEvenement(string idEvenement)
+        public List<Jour> GetJoursEvenement(string idEvenement)
         {
-            ArrayList jours = new ArrayList();
-
-            joursTableAdapter1.FillByEvenement(photosOrganiserDBDataSet1.Jours, idEvenement);
-            foreach (PhotosDBDataSet.JoursRow row in photosOrganiserDBDataSet1.Jours.Rows)
-            {
-                Jour j = new Jour();
-                j.Date = row.Date;
-                j.Id = row.Id;
-                j.IdEvenement = row.IdEvenement;
-                j.Commentaire = row.Commentaire;
-                jours.Add(j);
-            }
-            return jours;
+            return _context.Jours
+                .Where(j => j.EvenementId == idEvenement)
+                .ToList();
         }
 
-        public Jour GetJour(string id)
+        public Jour? GetJour(string id)
         {
-            Jour j = new Jour();
-
-            joursTableAdapter1.FillById(photosOrganiserDBDataSet1.Jours, id);
-            foreach (PhotosDBDataSet.JoursRow row in photosOrganiserDBDataSet1.Jours.Rows)
-            {
-                j.Date = row.Date;
-                j.Id = row.Id;
-                j.IdEvenement = row.IdEvenement;
-                j.Commentaire = row.Commentaire;
-            }
-            return j;
+            return _context.Jours
+                .Find(id);
         }
 
+        public string AddJour(Jour jour)
+        {
+            jour.Id = Guid.NewGuid().ToString();
+            _context.Jours.Add(jour);
+            return jour.Id;
+        }
 
+        public void UpdateJour(Jour jour)
+        {
+            _context.Jours.Update(jour);
+        }
     }
 }

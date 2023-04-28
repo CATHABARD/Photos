@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Photos.Modeles
 {
-    internal class Param
+    public class Param
     {
         [Key]
         public int Id { get; set; }

@@ -32,19 +32,15 @@ namespace Photos
             this.components = new System.ComponentModel.Container();
             this.evenement = new System.Windows.Forms.ComboBox();
             this.evenementsBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.PhotosDBDataSet = new Photos.PhotosDBDataSet();
             this.label1 = new System.Windows.Forms.Label();
-            this.evenementsTableAdapter = new Photos.PhotosDBDataSetTableAdapters.EvenementsTableAdapter();
             this.valider = new System.Windows.Forms.Button();
             this.annuler = new System.Windows.Forms.Button();
             this.remarques = new System.Windows.Forms.TextBox();
             this.date = new System.Windows.Forms.DateTimePicker();
             this.label2 = new System.Windows.Forms.Label();
-            this.joursTableAdapter1 = new Photos.PhotosDBDataSetTableAdapters.JoursTableAdapter();
             this.label3 = new System.Windows.Forms.Label();
             this.id = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.evenementsBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PhotosDBDataSet)).BeginInit();
             this.SuspendLayout();
             // 
             // evenement
@@ -61,12 +57,6 @@ namespace Photos
             // evenementsBindingSource
             // 
             this.evenementsBindingSource.DataMember = "Evenements";
-            this.evenementsBindingSource.DataSource = this.PhotosDBDataSet;
-            // 
-            // PhotosDBDataSet
-            // 
-            this.PhotosDBDataSet.DataSetName = "PhotosDBDataSet";
-            this.PhotosDBDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
             // 
             // label1
             // 
@@ -77,10 +67,6 @@ namespace Photos
             this.label1.Size = new System.Drawing.Size(61, 13);
             this.label1.TabIndex = 1;
             this.label1.Text = "Evènement";
-            // 
-            // evenementsTableAdapter
-            // 
-            this.evenementsTableAdapter.ClearBeforeFill = true;
             // 
             // valider
             // 
@@ -132,10 +118,6 @@ namespace Photos
             this.label2.TabIndex = 13;
             this.label2.Text = "Date";
             // 
-            // joursTableAdapter1
-            // 
-            this.joursTableAdapter1.ClearBeforeFill = true;
-            // 
             // label3
             // 
             this.label3.AutoSize = true;
@@ -176,7 +158,6 @@ namespace Photos
             this.Text = "nouveau jour";
             this.Load += new System.EventHandler(this.NouveauJour_Load);
             ((System.ComponentModel.ISupportInitialize)(this.evenementsBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PhotosDBDataSet)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -186,15 +167,12 @@ namespace Photos
 
         private System.Windows.Forms.ComboBox evenement;
         private System.Windows.Forms.Label label1;
-        private PhotosDBDataSet PhotosDBDataSet;
         private System.Windows.Forms.BindingSource evenementsBindingSource;
-        private PhotosDBDataSetTableAdapters.EvenementsTableAdapter evenementsTableAdapter;
         private System.Windows.Forms.Button valider;
         private System.Windows.Forms.Button annuler;
         private System.Windows.Forms.TextBox remarques;
         private System.Windows.Forms.DateTimePicker date;
         private System.Windows.Forms.Label label2;
-        private PhotosDBDataSetTableAdapters.JoursTableAdapter joursTableAdapter1;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox id;
     }

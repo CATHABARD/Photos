@@ -11,19 +11,20 @@ namespace Photos
     public partial class Carousel : Form
     {
         private PhotosService photosService;
-        private ArrayList listePhotos;
-        private Jour jour;
+        private List<Photo>? listePhotos;
+        private Jour? jour;
         private Point positionCentrale;
         private int indexPhotoCourante = -1;
         private PictureBox[] pictureBox;
-
+        readonly PhotosDbContext _context;
 
         private int x = 0;
 
-        public Carousel()
+        public Carousel(PhotosDbContext context)
         {
+            _context = context;
             InitializeComponent();
-            photosService = new PhotosService();
+            photosService = new PhotosService(_context);
             pictureBox = new PictureBox[2];
         }
 

@@ -1,7 +1,5 @@
 ﻿using Photos.Modeles;
 using Photos.Services;
-using System;
-using System.Windows.Forms;
 
 namespace Photos
 {
@@ -10,11 +8,13 @@ namespace Photos
         readonly EvenementsService EvenementsService;
         readonly Evenement evenement;
         public Evenement Evenement { get => evenement; }
+        readonly PhotosDbContext _context;
 
-        public NouvelEvenement()
+        public NouvelEvenement(PhotosDbContext context)
         {
+            _context = context;
             InitializeComponent();
-            EvenementsService = new EvenementsService();
+            EvenementsService = new (_context);
             evenement = new Evenement();
         }
 

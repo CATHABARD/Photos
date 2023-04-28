@@ -6,42 +6,47 @@ namespace Photos
 {
     public partial class Form1 : Form
     {
-        private ArrayList evenements;
+        private List<Evenement> evenements;
         private readonly EvenementsService evenementsService;
-        private Evenement evenementCourant;
-        private readonly Jours joursService;
-        private Jour jourCourant;
+        private Evenement? evenementCourant;
+        private readonly JoursService joursService;
+        private Jour? jourCourant;
         private PhotosService photosService;
-        private ArrayList photos;
-        private TreeNode nodeCourant = null;
+        private List<Photo> photos = new ();
+        private TreeNode? nodeCourant = null;
         private bool isSelectedNode = false;
         private List<Param> parametres;
         internal List<Param> Parametres { get => parametres; set => parametres = value; }
         readonly ParamsService paramsService;
-        private readonly Param paramPathImages;
-        private DirectoryInfo diEvenement;
+        private readonly Param? paramPathImages;
+        private DirectoryInfo? diEvenement;
         private readonly DirectoryInfo diRacine;
+        readonly PhotosDbContext _context;
 
 
         private int first = 0;
         private const int itemsByPage = 18;
 
 
-        public Form1()
+        public Form1(PhotosDbContext photosDbContext)
         {
-            paramsService = new ParamsService();
+            _context = photosDbContext;
+            paramsService = new ParamsService(_context);
             parametres = paramsService.GetParams();
 
             // Récupérer le répertoire par défaut
             paramPathImages = paramsService.GetParam("PathImages");
 
-            diRacine = new DirectoryInfo(paramPathImages.Valeur);
+            if(paramPathImages != null)
+                diRacine = new DirectoryInfo(paramPathImages.Valeur);
+            else
+                diRacine = new DirectoryInfo("MyDocuments");
 
             InitializeComponent();
-            evenementsService = new EvenementsService();
-            joursService = new Jours();
+            evenementsService = new (_context);
+            joursService = new (_context);
             evenements = evenementsService.GetEvenementsDetailles();
-            photosService = new PhotosService();
+            photosService = new (_context);
             evenementCourant = null;
             progressBar1.Style = ProgressBarStyle.Continuous;
 
@@ -79,7 +84,7 @@ namespace Photos
         /// <param name="e"></param>
         private void CréerUnÉvénementToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            using (NouvelEvenement nouvelEvenement = new NouvelEvenement())
+            using (NouvelEvenement nouvelEvenement = new (_context))
             {
                 isSelectedNode = false;
                 if (nouvelEvenement.ShowDialog() == DialogResult.OK)
@@ -106,7 +111,7 @@ namespace Photos
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question) == DialogResult.Yes)
             {
-                using (NouveauJour nouveauJour = new NouveauJour(evenementCourant))
+                using (NouveauJour nouveauJour = new (_context, evenementCourant))
                 {
                     isSelectedNode = false;
                     if (nouveauJour.ShowDialog() == DialogResult.OK)
@@ -136,13 +141,16 @@ namespace Photos
         /// <param name="e"></param>
         private void AjouterUnePhotoToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            using (nouvellePhoto nouvellePhoto = new nouvellePhoto())
+            if (jourCourant != null && evenementCourant != null)
             {
-                nouvellePhoto.ShowDialog(jourCourant, evenementCourant);
+                using (nouvellePhoto nouvellePhoto = new(_context))
+                {
+                    nouvellePhoto.ShowDialog(jourCourant, evenementCourant);
+                }
+                GetListePhotos();
+                InitListePhotos();
+                ButtonFirst_Click(this, null);
             }
-            GetListePhotos();
-            InitListePhotos();
-            ButtonFirst_Click(this, null);
         }
 
         /// <summary>
@@ -158,12 +166,11 @@ namespace Photos
             this.splitContainer2.Panel1.Controls.Clear();
             nodeCourant = e.Node;
 
-            jourCourant = joursService.GetJour(e.Node.Name);
-            evenementCourant = evenementsService.GetEvenement(jourCourant.IdEvenement);
-
             // Si on est au niveau des jours
             if (e.Node.Level == 1)
             {
+                jourCourant = joursService.GetJour(e.Node.Name);
+                evenementCourant = evenementsService.GetEvenement(jourCourant.EvenementId);
                 ajouterUnePhotoToolStripMenuItem.Enabled = true;
                 GetListePhotos();
                 first = 0;
@@ -212,7 +219,7 @@ namespace Photos
                 photos.Clear();
             string idJour = nodeCourant.Name;
             jourCourant = joursService.GetJour(idJour);
-            photosService = new PhotosService(jourCourant);
+            photosService = new (_context, jourCourant);
             photos = photosService.GetPhotosJour(jourCourant);
         }
 
@@ -247,7 +254,7 @@ namespace Photos
                 colonne = indexPhoto % 6;
                 try
                 {
-                    PhotoControl pc = new PhotoControl(p)
+                    PhotoControl pc = new (_context, p)
                     {
                         Location = new System.Drawing.Point(marge + colonne * hPas, 15 + ligne * vPas),
                     };
@@ -282,13 +289,13 @@ namespace Photos
             progressBar1.Visible = false;
         }
 
-        private void ChangePathPhotosJour(ArrayList Photos, string path)
+        private void ChangePathPhotosJour(List<Photo> Photos, string path)
         {
             foreach (Photo p in Photos)
             {
                 string fileName = Path.GetFileName(p.Adresse);
                 p.Adresse = path + "\\" + fileName;
-                PhotosService ps = new PhotosService();
+                PhotosService ps = new (_context);
                 ps.UpdatePhoto(p);
             }
         }
@@ -311,7 +318,7 @@ namespace Photos
         {
             int nbErreurs = 0;
             // Contrôle la validité des adresses des photos dans la base
-            ArrayList evenements = evenementsService.GetEvenements();
+            List<Evenement> evenements = evenementsService.GetEvenements();
             foreach (Evenement evenement in evenements)
             {
                 Console.WriteLine(evenement);
@@ -319,7 +326,7 @@ namespace Photos
                 foreach (Jour jour in evenement.Jours)
                 {
                     Console.WriteLine(jour);
-                    ArrayList photos = photosService.GetPhotosJour(jour);
+                    List<Photo> photos = photosService.GetPhotosJour(jour);
                     foreach (Photo photo in photos)
                     {
                         Console.WriteLine(photo);
@@ -346,11 +353,12 @@ namespace Photos
 
         private void CarouselMenuItem_Click(object sender, EventArgs e)
         {
-            using (Carousel carousel = new Carousel())
+            using (Carousel carousel = new (_context))
             {
                 carousel.ShowDialog(jourCourant);
             }
         }
+
         private void Form1_Shown(object sender, EventArgs e)
         {
             isSelectedNode = true;
@@ -403,7 +411,7 @@ namespace Photos
             this.InitListePhotos();
         }
 
-        private void ButtonFirst_Click(object sender, EventArgs e)
+        private void ButtonFirst_Click(object sender, EventArgs? e)
         {
             first = 0;
             buttonFirst.Enabled = false;
@@ -418,10 +426,10 @@ namespace Photos
             this.InitListePhotos();
         }
 
-        private void DéfinirUnDossierDeStockageMenuItem_Click(object sender, EventArgs e)
+        private void DéfinirUnDossierDeStockageMenuItem_Click(object sender, EventArgs? e)
         {
             MessageBox.Show("Le dossier que vous allez créer sera le dossier qui contiendra les photos que vous enregistrerez à l'avenir.");
-            using (EditPathImages epi = new EditPathImages(paramPathImages.Valeur))
+            using (EditPathImages epi = new EditPathImages(paramPathImages.Valeur, _context))
             {
                 epi.ShowDialog();
             }
@@ -449,7 +457,7 @@ namespace Photos
                     di = new DirectoryInfo(paramPathImages.Valeur);
 
                     // Parcourrir les evenements
-                    ArrayList evenements = evenementsService.GetEvenements();
+                    List<Evenement> evenements = evenementsService.GetEvenements();
                     foreach (Evenement evenement in evenements)
                     {
                         string evenementPath = evenement.Titre.Trim().Replace(' ', '_');
@@ -460,14 +468,14 @@ namespace Photos
                             di1 = new DirectoryInfo(evenementPath);
 
                         // Parcourrir les jours de l'évènement
-                        ArrayList jours = joursService.GetJoursEvenement(evenement.Id);
+                        List<Jour> jours = joursService.GetJoursEvenement(evenement.Id);
                         foreach (Jour j in jours)
                         {
                             string jourPath = j.Date.ToShortDateString().Replace('/', '-');
                             jourPath = jourPath.Substring(6, 4) + jourPath.Substring(2, 4) + jourPath.Substring(0, 2);
                             di2 = di1.CreateSubdirectory(jourPath);
                             // Parcourrir les photos du jour pour les copier
-                            ArrayList photos = photosService.GetPhotosJour(j);
+                            List<Photo> photos = photosService.GetPhotosJour(j);
                             foreach (Photo p in photos)
                             {
                                 string photoFileName = p.Adresse;
